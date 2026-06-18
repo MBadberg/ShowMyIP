@@ -7,7 +7,7 @@
  *  2. Fetch location / ISP data (ipapi.co) – one HTTPS call, no API key required.
  *  3. Enrich browser / OS display from navigator.userAgent.
  *
- * Works both on the standalone page (#show_my_ip_page) and on the
+ * Works both on the standalone page (.show_my_ip_root) and on the
  * embeddable website snippet (.show_my_ip_snippet).
  */
 
@@ -16,8 +16,8 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 // ---------------------------------------------------------------------------
 // Helper: update a DOM element inside the widget root
 // ---------------------------------------------------------------------------
-function setEl(root, id, html, asText = false) {
-    const el = root.querySelector(`#${id}`);
+function setEl(root, field, html, asText = false) {
+    const el = root.querySelector(`[data-smi-field="${field}"]`);
     if (!el) return;
     el.classList.remove("smi-loading");
     if (asText) {
@@ -25,6 +25,23 @@ function setEl(root, id, html, asText = false) {
     } else {
         el.innerHTML = html;
     }
+}
+
+function getFieldValue(value) {
+    return value === undefined || value === null ? "" : String(value).trim();
+}
+
+function joinFieldValues(values, separator = ", ") {
+    return values.map(getFieldValue).filter(Boolean).join(separator);
+}
+
+function formatCountry(name, code) {
+    const countryName = getFieldValue(name);
+    const countryCode = getFieldValue(code);
+    if (countryName && countryCode) {
+        return `${countryName} (${countryCode})`;
+    }
+    return countryName || countryCode;
 }
 
 // ---------------------------------------------------------------------------
@@ -77,13 +94,13 @@ function parseOS(ua) {
 // ---------------------------------------------------------------------------
 function buildLocationHTML(d) {
     const items = [
-        ["fa-flag", "Country", escHtml(`${d.country_name} (${d.country_code})`)],
-        ["fa-city", "City", escHtml(`${d.city}, ${d.region}`)],
-        ["fa-map-pin", "Postal", escHtml(d.postal)],
-        ["fa-clock", "Timezone", escHtml(d.timezone)],
-        ["fa-building", "ISP", escHtml(d.org)],
-        ["fa-map", "Coordinates", escHtml(`${d.latitude}, ${d.longitude}`)],
-    ].filter(([, , v]) => v && v !== "undefined" && v !== ", ");
+        ["fa-flag", "Country", formatCountry(d.country_name, d.country_code)],
+        ["fa-city", "City", joinFieldValues([d.city, d.region])],
+        ["fa-map-pin", "Postal", getFieldValue(d.postal)],
+        ["fa-clock", "Timezone", getFieldValue(d.timezone)],
+        ["fa-building", "ISP", getFieldValue(d.org)],
+        ["fa-map", "Coordinates", joinFieldValues([d.latitude, d.longitude])],
+    ].filter(([, , v]) => v);
 
     return `<div class="smi-location-grid">
         ${items
@@ -91,7 +108,7 @@ function buildLocationHTML(d) {
                 ([icon, label, value]) => `
         <div class="smi-loc-item">
             <span class="smi-loc-label"><i class="fa ${escHtml(icon)} me-1"></i>${escHtml(label)}</span>
-            <span class="smi-loc-value">${value}</span>
+            <span class="smi-loc-value">${escHtml(value)}</span>
         </div>`
             )
             .join("")}
@@ -110,7 +127,7 @@ function escHtml(str) {
 // Public widget
 // ---------------------------------------------------------------------------
 publicWidget.registry.ShowMyIP = publicWidget.Widget.extend({
-    selector: "#show_my_ip_page",
+    selector: ".show_my_ip_root",
 
     async start() {
         await this._super(...arguments);
@@ -134,18 +151,18 @@ publicWidget.registry.ShowMyIP = publicWidget.Widget.extend({
         const { name, version } = parseBrowser(ua);
         const os = parseOS(ua);
 
-        const browserEl = this.el.querySelector("#smi_browser");
+        const browserEl = this.el.querySelector('[data-smi-field="smi_browser"]');
         if (browserEl) {
             const text = version ? `${name} ${version}` : name;
             // Only replace if the server didn't already fill a non-empty value
             if (!browserEl.textContent.trim() || browserEl.classList.contains("smi-loading")) {
-                setEl(this.el, "smi_browser", escHtml(text), true);
+                setEl(this.el, "smi_browser", text, true);
             } else {
-                setEl(this.el, "smi_browser", escHtml(browserEl.textContent.trim()), true);
+                setEl(this.el, "smi_browser", browserEl.textContent.trim(), true);
             }
         }
 
-        setEl(this.el, "smi_os", escHtml(os), true);
+        setEl(this.el, "smi_os", os, true);
         return Promise.resolve();
     },
 
@@ -155,7 +172,7 @@ publicWidget.registry.ShowMyIP = publicWidget.Widget.extend({
             const resp = await fetch("https://api.ipify.org?format=json");
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             const data = await resp.json();
-            setEl(this.el, "smi_ipv4", escHtml(data.ip), true);
+            setEl(this.el, "smi_ipv4", data.ip, true);
         } catch {
             setEl(this.el, "smi_ipv4", "Not available", true);
         }
@@ -169,7 +186,7 @@ publicWidget.registry.ShowMyIP = publicWidget.Widget.extend({
             const data = await resp.json();
             // Only show if it looks like a real IPv6 address
             const ip = data.ip || "";
-            setEl(this.el, "smi_ipv6", escHtml(ip.includes(":") ? ip : "Not available"), true);
+            setEl(this.el, "smi_ipv6", ip.includes(":") ? ip : "Not available", true);
         } catch {
             setEl(this.el, "smi_ipv6", "Not available", true);
         }

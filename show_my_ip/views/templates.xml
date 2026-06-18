@@ -6,7 +6,7 @@
     ============================================================ -->
     <template id="page" name="Show My IP – Page">
         <t t-call="website.layout">
-            <div id="show_my_ip_page" class="container py-5">
+            <div class="show_my_ip_root container py-5">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
 
@@ -32,13 +32,13 @@
                                     </div>
                                     <div class="smi-row">
                                         <span class="smi-label">Public IPv4</span>
-                                        <span class="smi-value smi-loading" id="smi_ipv4">
+                                        <span class="smi-value smi-loading" data-smi-field="smi_ipv4">
                                             <i class="fa fa-spinner fa-spin"/> Loading…
                                         </span>
                                     </div>
                                     <div class="smi-row">
                                         <span class="smi-label">Public IPv6</span>
-                                        <span class="smi-value smi-loading" id="smi_ipv6">
+                                        <span class="smi-value smi-loading" data-smi-field="smi_ipv6">
                                             <i class="fa fa-spinner fa-spin"/> Loading…
                                         </span>
                                     </div>
@@ -55,7 +55,7 @@
 
                                     <div class="smi-row">
                                         <span class="smi-label">Browser</span>
-                                        <span class="smi-value" id="smi_browser">
+                                        <span class="smi-value" data-smi-field="smi_browser">
                                             <t t-if="browser">
                                                 <t t-esc="browser"/>
                                                 <t t-if="browser_version">
@@ -71,13 +71,13 @@
                                     </div>
                                     <div class="smi-row">
                                         <span class="smi-label">Operating System</span>
-                                        <span class="smi-value" id="smi_os">
+                                        <span class="smi-value" data-smi-field="smi_os">
                                             <t t-esc="platform or ''"/>
                                         </span>
                                     </div>
                                     <div class="smi-row smi-row-wrap">
                                         <span class="smi-label">User Agent</span>
-                                        <code class="smi-value smi-ua" id="smi_ua"/>
+                                        <code class="smi-value smi-ua" data-smi-field="smi_ua"/>
                                     </div>
                                 </section>
 
@@ -89,7 +89,7 @@
                                         <i class="fa fa-map-marker-alt me-1"/>
                                         Location
                                     </h2>
-                                    <div id="smi_location">
+                                    <div data-smi-field="smi_location">
                                         <span class="smi-loading">
                                             <i class="fa fa-spinner fa-spin"/> Loading location…
                                         </span>
@@ -111,7 +111,7 @@
     <template id="snippet_show_my_ip" name="Show My IP – Snippet">
         <section class="show_my_ip_snippet s_show_my_ip py-4" data-snippet="s_show_my_ip">
             <div class="container">
-                <div id="show_my_ip_page" class="smi-widget">
+                <div class="show_my_ip_root smi-widget">
                     <div class="smi-widget-header">
                         <i class="fa fa-globe me-2"/>
                         <strong>My IP Information</strong>
@@ -121,23 +121,23 @@
                             <div class="col-md-6">
                                 <div class="smi-chip">
                                     <span class="smi-chip-label">IPv4</span>
-                                    <span class="smi-chip-value smi-loading" id="smi_ipv4">
+                                    <span class="smi-chip-value smi-loading" data-smi-field="smi_ipv4">
                                         <i class="fa fa-spinner fa-spin"/> …
                                     </span>
                                 </div>
                                 <div class="smi-chip">
                                     <span class="smi-chip-label">IPv6</span>
-                                    <span class="smi-chip-value smi-loading" id="smi_ipv6">
+                                    <span class="smi-chip-value smi-loading" data-smi-field="smi_ipv6">
                                         <i class="fa fa-spinner fa-spin"/> …
                                     </span>
                                 </div>
                                 <div class="smi-chip">
                                     <span class="smi-chip-label">Browser</span>
-                                    <span class="smi-chip-value" id="smi_browser">–</span>
+                                    <span class="smi-chip-value" data-smi-field="smi_browser">–</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div id="smi_location">
+                                <div data-smi-field="smi_location">
                                     <span class="smi-loading">
                                         <i class="fa fa-spinner fa-spin"/> Loading location…
                                     </span>

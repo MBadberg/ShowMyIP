@@ -23,14 +23,12 @@ class ShowMyIPController(http.Controller):
     # ------------------------------------------------------------------
 
     def _get_client_ip(self):
-        """Return the real client IP, respecting common proxy headers."""
-        env = request.httprequest.environ
-        for header in ('HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR'):
-            value = env.get(header, '').strip()
+        """Return the client IP from Werkzeug's normalized proxy-aware request data."""
+        for value in request.httprequest.access_route or ():
+            value = value.strip()
             if value:
-                # X-Forwarded-For may contain a comma-separated list; use the first entry
-                return value.split(',')[0].strip()
-        return ''
+                return value
+        return (request.httprequest.remote_addr or '').strip()
 
     def _get_browser_info(self):
         """Return (browser, version, platform) from the werkzeug User-Agent object."""

@@ -19,7 +19,7 @@ A website page and embeddable snippet that displays:
     'category': 'Website',
     'author': 'MBadberg',
     'website': 'https://github.com/MBadberg/ShowMyIP',
-    'license': 'Other OSI approved licence',
+    'license': 'Unlicense',
     'depends': ['website'],
     'data': [
         'views/templates.xml',
@@ -33,5 +33,4 @@ A website page and embeddable snippet that displays:
     'installable': True,
     'application': False,
     'auto_install': False,
-    'images': ['static/description/banner.png'],
 }
