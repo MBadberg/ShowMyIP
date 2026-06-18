@@ -77,12 +77,12 @@ function parseOS(ua) {
 // ---------------------------------------------------------------------------
 function buildLocationHTML(d) {
     const items = [
-        ["fa-flag", "Country", `${escHtml(d.country_name)} (${escHtml(d.country_code)})`],
-        ["fa-city", "City", `${escHtml(d.city)}, ${escHtml(d.region)}`],
+        ["fa-flag", "Country", escHtml(`${d.country_name} (${d.country_code})`)],
+        ["fa-city", "City", escHtml(`${d.city}, ${d.region}`)],
         ["fa-map-pin", "Postal", escHtml(d.postal)],
         ["fa-clock", "Timezone", escHtml(d.timezone)],
         ["fa-building", "ISP", escHtml(d.org)],
-        ["fa-map", "Coordinates", `${d.latitude}, ${d.longitude}`],
+        ["fa-map", "Coordinates", escHtml(`${d.latitude}, ${d.longitude}`)],
     ].filter(([, , v]) => v && v !== "undefined" && v !== ", ");
 
     return `<div class="smi-location-grid">
@@ -90,7 +90,7 @@ function buildLocationHTML(d) {
             .map(
                 ([icon, label, value]) => `
         <div class="smi-loc-item">
-            <span class="smi-loc-label"><i class="fa ${icon} me-1"></i>${label}</span>
+            <span class="smi-loc-label"><i class="fa ${escHtml(icon)} me-1"></i>${escHtml(label)}</span>
             <span class="smi-loc-value">${value}</span>
         </div>`
             )
