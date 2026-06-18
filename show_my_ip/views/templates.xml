@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         Standalone page rendered at /show-my-ip
+    ============================================================ -->
+    <template id="page" name="Show My IP – Page">
+        <t t-call="website.layout">
+            <div class="show_my_ip_root container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+
+                        <div class="card smi-card shadow-sm">
+                            <div class="card-header smi-card-header d-flex align-items-center">
+                                <i class="fa fa-globe me-2 fa-lg"/>
+                                <h1 class="h4 mb-0">My IP Information</h1>
+                            </div>
+                            <div class="card-body p-4">
+
+                                <!-- IP Addresses -->
+                                <section class="smi-section">
+                                    <h2 class="smi-section-title">
+                                        <i class="fa fa-server me-1"/>
+                                        IP Address
+                                    </h2>
+
+                                    <div class="smi-row">
+                                        <span class="smi-label">Server-detected IP</span>
+                                        <span class="smi-value" id="smi_server_ip">
+                                            <t t-esc="ip_address or 'Unknown'"/>
+                                        </span>
+                                    </div>
+                                    <div class="smi-row">
+                                        <span class="smi-label">Public IPv4</span>
+                                        <span class="smi-value smi-loading" data-smi-field="smi_ipv4">
+                                            <i class="fa fa-spinner fa-spin"/> Loading…
+                                        </span>
+                                    </div>
+                                    <div class="smi-row">
+                                        <span class="smi-label">Public IPv6</span>
+                                        <span class="smi-value smi-loading" data-smi-field="smi_ipv6">
+                                            <i class="fa fa-spinner fa-spin"/> Loading…
+                                        </span>
+                                    </div>
+                                </section>
+
+                                <hr class="smi-divider"/>
+
+                                <!-- Browser -->
+                                <section class="smi-section">
+                                    <h2 class="smi-section-title">
+                                        <i class="fa fa-window-maximize me-1"/>
+                                        Browser
+                                    </h2>
+
+                                    <div class="smi-row">
+                                        <span class="smi-label">Browser</span>
+                                        <span class="smi-value" data-smi-field="smi_browser">
+                                            <t t-if="browser">
+                                                <t t-esc="browser"/>
+                                                <t t-if="browser_version">
+                                                    &#160;<t t-esc="browser_version"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="smi-loading">
+                                                    <i class="fa fa-spinner fa-spin"/> Detecting…
+                                                </span>
+                                            </t>
+                                        </span>
+                                    </div>
+                                    <div class="smi-row">
+                                        <span class="smi-label">Operating System</span>
+                                        <span class="smi-value" data-smi-field="smi_os">
+                                            <t t-esc="platform or ''"/>
+                                        </span>
+                                    </div>
+                                    <div class="smi-row smi-row-wrap">
+                                        <span class="smi-label">User Agent</span>
+                                        <code class="smi-value smi-ua" data-smi-field="smi_ua"/>
+                                    </div>
+                                </section>
+
+                                <hr class="smi-divider"/>
+
+                                <!-- Location -->
+                                <section class="smi-section">
+                                    <h2 class="smi-section-title">
+                                        <i class="fa fa-map-marker-alt me-1"/>
+                                        Location
+                                    </h2>
+                                    <div data-smi-field="smi_location">
+                                        <span class="smi-loading">
+                                            <i class="fa fa-spinner fa-spin"/> Loading location…
+                                        </span>
+                                    </div>
+                                </section>
+
+                            </div><!-- /card-body -->
+                        </div><!-- /card -->
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         Embeddable website snippet
+    ============================================================ -->
+    <template id="snippet_show_my_ip" name="Show My IP – Snippet">
+        <section class="show_my_ip_snippet s_show_my_ip py-4" data-snippet="s_show_my_ip">
+            <div class="container">
+                <div class="show_my_ip_root smi-widget">
+                    <div class="smi-widget-header">
+                        <i class="fa fa-globe me-2"/>
+                        <strong>My IP Information</strong>
+                    </div>
+                    <div class="smi-widget-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="smi-chip">
+                                    <span class="smi-chip-label">IPv4</span>
+                                    <span class="smi-chip-value smi-loading" data-smi-field="smi_ipv4">
+                                        <i class="fa fa-spinner fa-spin"/> …
+                                    </span>
+                                </div>
+                                <div class="smi-chip">
+                                    <span class="smi-chip-label">IPv6</span>
+                                    <span class="smi-chip-value smi-loading" data-smi-field="smi_ipv6">
+                                        <i class="fa fa-spinner fa-spin"/> …
+                                    </span>
+                                </div>
+                                <div class="smi-chip">
+                                    <span class="smi-chip-label">Browser</span>
+                                    <span class="smi-chip-value" data-smi-field="smi_browser">–</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div data-smi-field="smi_location">
+                                    <span class="smi-loading">
+                                        <i class="fa fa-spinner fa-spin"/> Loading location…
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- ============================================================
+         Register the snippet in the Odoo website builder
+    ============================================================ -->
+    <template id="snippets" inherit_id="website.snippets" name="Show My IP – Snippets">
+        <xpath expr="//div[@id='snippet_content']" position="before">
+            <div id="snippet_group_show_my_ip" class="o_panel">
+                <div class="o_panel_header">Show My IP</div>
+                <div class="o_panel_body">
+                    <t t-snippet="show_my_ip.snippet_show_my_ip"
+                       t-thumbnail="/show_my_ip/static/description/snippet_thumbnail.svg"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
